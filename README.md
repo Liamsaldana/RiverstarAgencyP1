@@ -22,9 +22,9 @@ Este proyecto hace uso de las siguientes tecnologías:
 
 ### Prerrequisitos
 Antes de ejecutar el proyecto, asegúrate de tener instalados los siguientes programas:
-- Python (o el lenguaje de backend que utilices).
-- Un servidor de base de datos (MySQL, MongoDB, etc.).
-- Dependencias específicas (puedes listarlas en el siguiente comando de instalación).
+- Python 
+- Un servidor de base de datos 
+- Dependencias específicas: Panda y PyQt5
 
 ### Pasos de Instalación
 
