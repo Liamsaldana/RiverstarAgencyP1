@@ -288,7 +288,7 @@ class MainWindow(QMainWindow):
         # Indicador de espacios restantes
         self.spaces_label = QLabel()
         self.spaces_label.setAlignment(Qt.AlignCenter)
-        self.spaces_label.setStyleSheet("color: #006F6B; font-size: 18px; font-weight: bold;")  # Verde TecMilenio oscuro
+        self.spaces_label.setStyleSheet("color: #00534C; font-size: 18px; font-weight: bold;")  # Verde TecMilenio oscuro
         main_layout.addWidget(self.spaces_label)
 
         # Área de ingreso de matrícula y botones
@@ -296,11 +296,11 @@ class MainWindow(QMainWindow):
         ingreso_layout = QHBoxLayout()
         self.matricula_input = QLineEdit()
         self.matricula_input.setPlaceholderText("Ingrese la matrícula (Ej: AL001, TO001 o 001)")
-        self.matricula_input.setStyleSheet("border: 2px solid #00796B; color: #00796B;")  # Verde más oscuro
+        self.matricula_input.setStyleSheet("border: 2px solid #00534C; color: #00534C;")  # Verde más oscuro
         btn_entrada = QPushButton("Registrar Entrada")
-        btn_entrada.setStyleSheet("background-color: #004D40; color: white;")  # Verde intenso
+        btn_entrada.setStyleSheet("background-color: #00534C; color: white; border-radius: 15px; padding: 10px")  # Verde intenso
         btn_salida = QPushButton("Registrar Salida")
-        btn_salida.setStyleSheet("background-color: #004D40; color: white;")  # Verde intenso
+        btn_salida.setStyleSheet("background-color: #00534C; color: white; border-radius: 15px; padding: 10px")  # Verde intenso
         ingreso_layout.addWidget(self.matricula_input)
         ingreso_layout.addWidget(btn_entrada)
         ingreso_layout.addWidget(btn_salida)
@@ -346,9 +346,9 @@ class MainWindow(QMainWindow):
         # Botones para procesar la lista de espera
         waiting_buttons_layout = QHBoxLayout()
         self.btn_admitir = QPushButton("Admitir Seleccionados")
-        self.btn_admitir.setStyleSheet("background-color: #00796B; color: white;")  # Verde intenso
+        self.btn_admitir.setStyleSheet("background-color: #00534C; color: white; border-radius: 15px; padding: 10px")  # Verde intenso
         self.btn_cancelar = QPushButton("Cancelar Seleccionados")
-        self.btn_cancelar.setStyleSheet("background-color: #D32F2F; color: white;")  # Rojo oscuro
+        self.btn_cancelar.setStyleSheet("background-color: #D32F2F; color: white; border-radius: 15px; padding: 10px")  # Rojo oscuro
         waiting_buttons_layout.addWidget(self.btn_admitir)
         waiting_buttons_layout.addWidget(self.btn_cancelar)
         main_layout.addLayout(waiting_buttons_layout)
@@ -357,8 +357,8 @@ class MainWindow(QMainWindow):
         botones_layout = QHBoxLayout()
         btn_registro = QPushButton("Ver Registro Completo")
         btn_estadisticas = QPushButton("Ver Estadísticas")
-        btn_registro.setStyleSheet("background-color: #4CAF50; color: white;")  # Verde claro
-        btn_estadisticas.setStyleSheet("background-color: #4CAF50; color: white;")  # Verde claro
+        btn_registro.setStyleSheet("background-color: #4CAF50; color: white; border-radius: 15px; padding: 10px")  # Verde claro
+        btn_estadisticas.setStyleSheet("background-color: #4CAF50; color: white; border-radius: 15px; padding: 10px")  # Verde claro
         botones_layout.addWidget(btn_registro)
         botones_layout.addWidget(btn_estadisticas)
         main_layout.addLayout(botones_layout)
@@ -497,7 +497,7 @@ class MainWindow(QMainWindow):
 # -----------------------------
 def main():
     # Ruta absoluta al archivo Excel (ajusta según tu sistema)
-    excel_file = "DBGym.xlsx"  # Reemplaza 'tu_usuario' según corresponda
+    excel_file = "DB.xlsx"  # Reemplaza 'tu_usuario' según corresponda
     gym_manager = GymManager(excel_file)
     app = QApplication(sys.argv)
     window = MainWindow(gym_manager)
