@@ -7,6 +7,7 @@ from PyQt5.QtWidgets import (
     QMessageBox, QDialog, QGroupBox, QStatusBar
 )
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QColor, QPalette
 
 # -----------------------------
 # Clase Student
@@ -156,13 +157,79 @@ class RegistroCompletoWindow(QDialog):
         self.init_ui()
 
     def init_ui(self):
-        layout = QVBoxLayout()
-        self.table = QTableWidget()
-        self.table.setColumnCount(5)
-        self.table.setHorizontalHeaderLabels(["Matrícula", "Nombre", "Categoría", "Entrada", "Salida"])
-        layout.addWidget(self.table)
-        self.setLayout(layout)
-        self.refresh_table()
+        central_widget = QWidget()
+        main_layout = QVBoxLayout()
+
+        # Indicador de espacios restantes
+        self.spaces_label = QLabel()
+        self.spaces_label.setAlignment(Qt.AlignCenter)
+        self.spaces_label.setStyleSheet("color: green; font-size: 16px; font-weight: bold;")  # Verde para el texto
+        main_layout.addWidget(self.spaces_label)
+
+        # Área de ingreso de matrícula y botones
+        ingreso_group = QGroupBox("Ingreso de Matrícula")
+        ingreso_layout = QHBoxLayout()
+        self.matricula_input = QLineEdit()
+        self.matricula_input.setPlaceholderText("Ingrese la matrícula (Ej: AL001, TO001 o 001)")
+        self.matricula_input.setStyleSheet("border: 1px solid green; color: green;")  # Verde para el borde y el texto
+        btn_entrada = QPushButton("Registrar Entrada")
+        btn_entrada.setStyleSheet("background-color: green; color: white;")  # Botón verde con texto blanco
+        btn_salida = QPushButton("Registrar Salida")
+        btn_salida.setStyleSheet("background-color: green; color: white;")  # Botón verde con texto blanco
+        ingreso_layout.addWidget(self.matricula_input)
+        ingreso_layout.addWidget(btn_entrada)
+        ingreso_layout.addWidget(btn_salida)
+        ingreso_group.setLayout(ingreso_layout)
+        main_layout.addWidget(ingreso_group)
+
+        # Área de tablas: Activos y Lista de Espera
+        tablas_group = QGroupBox("Estado Actual")
+        tablas_layout = QHBoxLayout()
+        self.active_table = QTableWidget()
+        self.active_table.setColumnCount(3)
+        self.active_table.setHorizontalHeaderLabels(["Matrícula", "Nombre", "Entrada"])
+        self.active_table.setStyleSheet("QTableWidget {background-color: #f0f0f0; color: green;}")  # Verde en las tablas
+        self.waiting_table = QTableWidget()
+        self.waiting_table.setColumnCount(4)
+        self.waiting_table.setHorizontalHeaderLabels(["Seleccionar", "Orden", "Matrícula", "Nombre"])
+        self.waiting_table.setStyleSheet("QTableWidget {background-color: #f0f0f0; color: green;}")  # Verde en las tablas
+        tablas_layout.addWidget(self.active_table)
+        tablas_layout.addWidget(self.waiting_table)
+        tablas_group.setLayout(tablas_layout)
+        main_layout.addWidget(tablas_group)
+
+        # Botones para procesar la lista de espera
+        waiting_buttons_layout = QHBoxLayout()
+        self.btn_admitir = QPushButton("Admitir Seleccionados")
+        self.btn_admitir.setStyleSheet("background-color: green; color: white;")  # Botón verde con texto blanco
+        self.btn_cancelar = QPushButton("Cancelar Seleccionados")
+        self.btn_cancelar.setStyleSheet("background-color: green; color: white;")  # Botón verde con texto blanco
+        waiting_buttons_layout.addWidget(self.btn_admitir)
+        waiting_buttons_layout.addWidget(self.btn_cancelar)
+        main_layout.addLayout(waiting_buttons_layout)
+
+        # Botones para abrir ventanas adicionales
+        botones_layout = QHBoxLayout()
+        btn_registro = QPushButton("Ver Registro Completo")
+        btn_estadisticas = QPushButton("Ver Estadísticas")
+        botones_layout.addWidget(btn_registro)
+        botones_layout.addWidget(btn_estadisticas)
+        main_layout.addLayout(botones_layout)
+
+        central_widget.setLayout(main_layout)
+        self.setCentralWidget(central_widget)
+        self.statusBar = QStatusBar()
+        self.setStatusBar(self.statusBar)
+
+        # Conectar señales
+        btn_entrada.clicked.connect(self.handle_entry)
+        btn_salida.clicked.connect(self.handle_exit)
+        btn_registro.clicked.connect(self.show_registro_completo)
+        btn_estadisticas.clicked.connect(self.show_estadisticas)
+        self.btn_admitir.clicked.connect(self.admit_selected)
+        self.btn_cancelar.clicked.connect(self.cancel_selected)
+
+        self.update_tables()
 
     def refresh_table(self):
         logs = self.gym_manager.day_logs
@@ -176,7 +243,6 @@ class RegistroCompletoWindow(QDialog):
             salida = record["salida"].strftime('%H:%M:%S') if record["salida"] is not None else ""
             self.table.setItem(row, 4, QTableWidgetItem(salida))
         self.table.resizeColumnsToContents()
-
 # -----------------------------
 # Ventana de Estadísticas (diarias, semanales y mensuales)
 # -----------------------------
@@ -222,6 +288,7 @@ class MainWindow(QMainWindow):
         # Indicador de espacios restantes
         self.spaces_label = QLabel()
         self.spaces_label.setAlignment(Qt.AlignCenter)
+        self.spaces_label.setStyleSheet("color: #00534C; font-size: 18px; font-weight: bold;")  # Verde TecMilenio oscuro
         main_layout.addWidget(self.spaces_label)
 
         # Área de ingreso de matrícula y botones
@@ -229,8 +296,11 @@ class MainWindow(QMainWindow):
         ingreso_layout = QHBoxLayout()
         self.matricula_input = QLineEdit()
         self.matricula_input.setPlaceholderText("Ingrese la matrícula (Ej: AL001, TO001 o 001)")
+        self.matricula_input.setStyleSheet("border: 2px solid #00534C; color: #00534C;")  # Verde más oscuro
         btn_entrada = QPushButton("Registrar Entrada")
+        btn_entrada.setStyleSheet("background-color: #00534C; color: white; border-radius: 15px; padding: 10px")  # Verde intenso
         btn_salida = QPushButton("Registrar Salida")
+        btn_salida.setStyleSheet("background-color: #00534C; color: white; border-radius: 15px; padding: 10px")  # Verde intenso
         ingreso_layout.addWidget(self.matricula_input)
         ingreso_layout.addWidget(btn_entrada)
         ingreso_layout.addWidget(btn_salida)
@@ -244,10 +314,30 @@ class MainWindow(QMainWindow):
         self.active_table = QTableWidget()
         self.active_table.setColumnCount(3)
         self.active_table.setHorizontalHeaderLabels(["Matrícula", "Nombre", "Entrada"])
-        # Tabla de lista de espera con columna de selección
+        self.active_table.setStyleSheet("""
+            QTableWidget {
+                background-color: #E8F5E9;  # Fondo verde muy claro
+                color: #00796B;  # Texto verde más oscuro
+            }
+            QTableWidget::item {
+                color: #00796B;  # Texto verde más oscuro
+            }
+        """)
+        
+        # Tabla de lista de espera
         self.waiting_table = QTableWidget()
         self.waiting_table.setColumnCount(4)
         self.waiting_table.setHorizontalHeaderLabels(["Seleccionar", "Orden", "Matrícula", "Nombre"])
+        self.waiting_table.setStyleSheet("""
+            QTableWidget {
+                background-color: #E8F5E9;  # Fondo verde muy claro
+                color: #00796B;  # Texto verde más oscuro
+            }
+            QTableWidget::item {
+                color: #00796B;  # Texto verde más oscuro
+            }
+        """)
+        
         tablas_layout.addWidget(self.active_table)
         tablas_layout.addWidget(self.waiting_table)
         tablas_group.setLayout(tablas_layout)
@@ -256,7 +346,9 @@ class MainWindow(QMainWindow):
         # Botones para procesar la lista de espera
         waiting_buttons_layout = QHBoxLayout()
         self.btn_admitir = QPushButton("Admitir Seleccionados")
+        self.btn_admitir.setStyleSheet("background-color: #00534C; color: white; border-radius: 15px; padding: 10px")  # Verde intenso
         self.btn_cancelar = QPushButton("Cancelar Seleccionados")
+        self.btn_cancelar.setStyleSheet("background-color: #D32F2F; color: white; border-radius: 15px; padding: 10px")  # Rojo oscuro
         waiting_buttons_layout.addWidget(self.btn_admitir)
         waiting_buttons_layout.addWidget(self.btn_cancelar)
         main_layout.addLayout(waiting_buttons_layout)
@@ -265,6 +357,8 @@ class MainWindow(QMainWindow):
         botones_layout = QHBoxLayout()
         btn_registro = QPushButton("Ver Registro Completo")
         btn_estadisticas = QPushButton("Ver Estadísticas")
+        btn_registro.setStyleSheet("background-color: #4CAF50; color: white; border-radius: 15px; padding: 10px")  # Verde claro
+        btn_estadisticas.setStyleSheet("background-color: #4CAF50; color: white; border-radius: 15px; padding: 10px")  # Verde claro
         botones_layout.addWidget(btn_registro)
         botones_layout.addWidget(btn_estadisticas)
         main_layout.addLayout(botones_layout)
@@ -398,13 +492,12 @@ class MainWindow(QMainWindow):
     def show_estadisticas(self):
         self.estadisticas_window = EstadisticasWindow(self.gym_manager)
         self.estadisticas_window.exec_()
-
 # -----------------------------
 # Función principal
 # -----------------------------
 def main():
     # Ruta absoluta al archivo Excel (ajusta según tu sistema)
-    excel_file = "DBGym.xlsx"  # Reemplaza 'tu_usuario' según corresponda
+    excel_file = "DB.xlsx"  # Reemplaza 'tu_usuario' según corresponda
     gym_manager = GymManager(excel_file)
     app = QApplication(sys.argv)
     window = MainWindow(gym_manager)
