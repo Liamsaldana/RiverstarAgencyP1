@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Registros de Asistencia</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 10px; border: 1px solid #ccc; text-align: center; }
+    </style>
+</head>
+<body>
+    <h2>Registros Recientes</h2>
+    <table>
+        <tr>
+            <th>Matrícula</th>
+            <th>Estado</th>
+            <th>Fecha</th>
+        </tr>
+        {% for matricula, estado, fecha in datos %}
+        <tr>
+            <td>{{ matricula }}</td>
+            <td>{{ estado }}</td>
+            <td>{{ fecha }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
